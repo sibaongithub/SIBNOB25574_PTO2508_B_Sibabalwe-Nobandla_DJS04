@@ -1,90 +1,90 @@
-# DSJ04 React Podcast App: Search, Sort, Filter, and Pagination
+# DJS04 – React Podcast App: Search, Sort, Filter & Pagination
 
-## Project Overview
+## Overview
+An advanced podcast browsing page built with **React**. It builds on the DJS03
+landing page and adds live **search**, **sorting**, **genre filtering**, and
+**pagination** — all kept in sync so using one control never resets the others.
 
-In this project, you will build an advanced podcast browsing experience that allows users to dynamically **search**, **sort**, **filter**, and **paginate** a list of podcast shows. The goal is to create an intuitive interface that responds to user input in real time and maintains a consistent, seamless experience throughout navigation.
-
-This project will test your ability to manage complex UI state, synchronise multiple user interactions, and maintain clean, scalable code.
-
-## Core Objectives
-
-### Search Functionality
-
-- Implement a flexible search that matches any part of the podcast title.
-- Results should update dynamically as the user types or upon submission.
-- Ensure that search results integrate with current filters, sorts, and pagination without resetting them.
-
-### Sorting Options
-
-- Allow sorting podcasts by:
-  - Newest first (based on last updated date).
-  - Title A–Z and Z–A.
-- Sorting must work in tandem with any search or filter criteria.
-
-### Filtering
-
-- Enable genre-based filtering using a dropdown or multi-select input.
-- Ensure filters work alongside current search, sort, and pagination state.
-- Maintain selected filters when navigating between pages or updating the list.
-
-### Pagination
-
-- Display podcasts in manageable chunks using pagination, load-more, or infinite scroll.
-- Ensure that pagination respects the currently active search, filter, and sort state.
-- Keep all UI selections intact while navigating pages.
-
-### State Synchronisation
-
-- Maintain a centralised and cleanly organised state using React state, context, or a state management library.
-- Ensure that all controls (search, sort, filter, pagination) reflect changes immediately and stay in sync.
-
-### Code Quality & Maintainability
-
-- Use JSDoc to document all major functions and modules.
-- Apply consistent formatting and naming conventions.
-- Keep logic modular and components reusable.
-
-### API Endpoints
-
-Data can be called via a `fetch` request to the following endpoint.
-
-| URL                               |                             |
-| --------------------------------- | --------------------------- |
-| `https://podcast-api.netlify.app` | Returns an array of PREVIEW |
-
-### Genre Titles
-
-Since the podcast preview information fetched from the API only exposes genres by their IDs, the actual genre details (such as titles) are not included in the API response. These details are instead provided in the data.js file found in this repository. Therefore, it is recommended that you include the mapping between genre ID values and their corresponding titles in your code using this file.
-
-## Project Deliverables
-
-- A fully functional React app that:
-
-  - Fetches and displays podcast data.
-  - Allows live searching, sorting, filtering, and pagination.
-  - Maintains consistent state across all UI interactions.
-
-- **Clean Codebase** with:
-
-  - Reusable, modular components.
-  - Clear and consistent formatting across all files.
-  - JSDoc comments for functions/modules.
-
-- **README.md** with:
-
-  - Project overview and purpose.
-  - Setup and usage instructions.
-  - Descriptions of key features (search, filter, sort, pagination).
-
-- **Version Control (GitHub)**:
-  - Clear, meaningful commit messages.
-  - Incremental commits reflecting development progress.
-
-## Success Criteria
-
-- No console errors or broken UI on load.
-- All features work correctly and together without losing state.
-- Clean, maintainable codebase with documentation.
-- A polished user experience with responsive layout and real-time updates.
+API: https://podcast-api.netlify.app/ (genre titles come from the local `data.js`).
 
 ---
+
+## Features
+- **Search** – matches any part of a podcast title and updates as you type.
+- **Sort** – Newest first (by last updated date), Title A–Z, and Title Z–A.
+- **Filter** – by genre, using the dropdown.
+- **Pagination** – shows the podcasts in pages with Prev / numbered / Next buttons.
+- **State stays in sync** – search, filter and sort all work together. Changing any
+  of them sends you back to page 1, and pagination always respects the active
+  search/filter/sort.
+- **Loading, error and empty states** are all handled.
+
+---
+
+## Tech Used
+- **React** functional components (`useState`, `useEffect`, `useMemo`)
+- **Fetch API** for the data
+- **Tailwind CSS** (via CDN) for styling
+- **Vite** as the dev server / build tool
+
+---
+
+## Project Structure
+```
+djs04/
+├── index.html              Vite entry – loads Tailwind + mounts the app
+├── package.json
+├── vite.config.js
+├── .gitignore
+├── README.md
+└── src/
+    ├── main.jsx            mounts <App /> into index.html
+    ├── App.jsx             owns ALL state and keeps the controls in sync
+    ├── data.js             the genre list (id, title, etc.)
+    ├── index.css           base styles + spinner animation
+    ├── api/
+    │   └── fetchPodcasts.js   the API fetch function
+    ├── components/
+    │   ├── Header.jsx         the top navbar
+    │   ├── Controls.jsx       search box + genre filter + sort dropdown
+    │   ├── PodcastCard.jsx    one reusable podcast card
+    │   ├── PodcastGrid.jsx    the responsive grid (+ empty state)
+    │   └── Pagination.jsx     Prev / numbered pages / Next
+    └── utils/
+        ├── formatDate.js       formats the last-updated date
+        └── filterPodcasts.js   pure search / filter / sort functions
+```
+
+### How the state works
+- **`App.jsx`** holds everything in one place: the fetched `podcasts`, plus the
+  `search`, `genre`, `sort` and `page` values.
+- When the user types, picks a genre, or changes the sort, `App` recomputes the
+  visible list with `getVisiblePodcasts` (in `utils/filterPodcasts.js`) using
+  `useMemo`, then slices it for the current page.
+- Changing search/genre/sort resets the page back to 1 so you never land on an
+  empty page. Pagination only ever pages through the already-filtered list.
+
+---
+
+## How to Run
+1. Open the `djs04` folder in your terminal.
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+4. Open the local address Vite prints (usually `http://localhost:5173`).
+
+To make a production build: `npm run build`, then `npm run preview`.
+
+---
+
+## Deliverables
+- A React app that fetches and displays podcast data.
+- Live search, sorting, genre filtering, and pagination that all work together.
+- Centralised state so every control stays in sync.
+- Reusable, modular components and JSDoc comments on the key functions.
+- Loading, error, and empty states with a responsive layout.
